@@ -66,5 +66,5 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj"
     },
-    "dotnet.defaultSolution": "blind-bartender-interactive-game.slnx"
+    "dotnet.defaultSolution": "blind-bartender-game.slnx"
 }

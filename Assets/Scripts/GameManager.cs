@@ -10,9 +10,10 @@ public class GameManager : MonoBehaviour
 {
     public int padNumber = 4;
     public int handNumber = 2;
-
-    private int nextHandNumber;
-    private int nextPadNumber;
+    
+    // Initialize to -1 to prevent out of bounds error on ResetGame call without filling the necessary fields
+    private int nextPadNumber = -1;
+    private int nextHandNumber = -1;
 
     public int choosenDepth = 1; // Depth for the minimax algorithm
 
@@ -112,7 +113,8 @@ public class GameManager : MonoBehaviour
             padColours[i].color = Color.gray;
         }
     }
-    /*
+
+    /* Minimax algorithm that was unecessary
     public double minimax(gameState position, int depth, bool isMaximizingAI)
     {
         // Implement the minimax algorithm here
@@ -448,10 +450,16 @@ public class GameManager : MonoBehaviour
 
     public void ResetGame()
     {
-        // Reset the game state
-        handNumber = nextHandNumber;
-        padNumber = nextPadNumber;
-        Start(); // Reinitialize the game
+        if (nextHandNumber == -1) // prevent index out of bounds exception
+        {
+            Start();
+        }
+        else
+        {
+            handNumber = nextHandNumber;
+            padNumber = nextPadNumber;
+            Start();
+        }
     }
 
     public void changeHandNumber(int newHandNumber)

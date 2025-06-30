@@ -1,0 +1,4 @@
+# Ignore ShaderLab files in language statistics
+*.shader linguist-detectable=false
+*.cginc linguist-detectable=false
+*.compute linguist-detectable=false

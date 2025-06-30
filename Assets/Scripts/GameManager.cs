@@ -8,9 +8,14 @@ using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
-    public int padNumber = 3;
-    public int handNumber = 2;
+    public const int minPadNumber = 3;
+    public const int minHandNumber = 2;
 
+    public int padNumber = minPadNumber;
+    public int handNumber = minHandNumber;
+
+    public Color unpressedColour;
+    public Color pressedColour;
     private Image[] padColours;
     private Button[] padButtons; // Assuming you have buttons for each pad
 
@@ -103,7 +108,7 @@ public class GameManager : MonoBehaviour
         // Pads all gray until player interacts
         for (int i = 0; i < padColours.Length; i++)
         {
-            padColours[i].color = Color.gray;
+            padColours[i].color = unpressedColour;
         }
     }
 
@@ -265,6 +270,7 @@ public class GameManager : MonoBehaviour
                     Debug.Log("Player has pressed enough pads. Ending turn.");
                     isPlayerTurn1 = false; // End the player's turn
                 }
+                padColours[padIndex].color = pressedColour; // Change color to indicate it has been pressed
             }
             if (padPresses[padIndex] == 1)
             {
@@ -332,7 +338,7 @@ public class GameManager : MonoBehaviour
             // Reset pad colours to gray
             for (int i = 0; i < padColours.Length; i++)
             {
-                padColours[i].color = Color.gray;
+                padColours[i].color = unpressedColour;
             }
         }
         else
@@ -340,6 +346,13 @@ public class GameManager : MonoBehaviour
             Debug.Log("Not enough pad presses to end the turn. Minimum required: " + handNumber);
             return; // Do not end the turn if the condition is not met
         }
+    }
+
+    public void Forfeit()
+    {
+        endGameMessage.SetActive(true);
+        endGameHeader.text = "You Lost.";
+        endGameBody.text = "Is this selection of hands and pads even possible to win?";
     }
 
     public void ResetGame()
@@ -353,10 +366,10 @@ public class GameManager : MonoBehaviour
 
     public void changeHandNumber(int newHandNumber)
     {
-        handNumber = newHandNumber + 1;
+        handNumber = newHandNumber + minHandNumber;
     }
     public void changePadNumber(int newPadNumber)
     {
-        padNumber = newPadNumber + 3;
+        padNumber = newPadNumber + minPadNumber;
     }
 }   

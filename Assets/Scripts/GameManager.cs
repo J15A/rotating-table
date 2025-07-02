@@ -2,12 +2,10 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
-using System.Threading;
 using System.Collections.Generic;
-using UnityEngine.Rendering;
-using System.Numerics;
-using Unity.Mathematics;
-using UnityEngine.Experimental.AI;
+using Unity.VisualScripting;
+using NUnit.Framework;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -25,6 +23,7 @@ public class GameManager : MonoBehaviour
     public int[] pads;
     private bool isPlayerTurn1;
     private bool isPlayerTurn2;
+    private bool isAIRotate;
 
     public GameObject endGameMessage;
     public TextMeshProUGUI endGameHeader;
@@ -32,6 +31,7 @@ public class GameManager : MonoBehaviour
 
     public int[] padPresses; // Counter for the number of pad presses
     public int distinctPadPresses;
+    private bool aiRotationStarted = false;
 
     public struct gameState
     {
@@ -253,6 +253,24 @@ public class GameManager : MonoBehaviour
                 EndPlayerTurn(); // End the player's turn when enter is pressed
             }
         }
+        else if (isAIRotate)
+        {
+            GameObject currGame = games[padNumber - 3];
+            PadRotator rotator = currGame.GetComponent<PadRotator>();
+
+            if (!aiRotationStarted)
+            {
+                // Rotate the pads array to simulate AI move
+                rotator.RotatePads();
+                aiRotationStarted = true;
+            }
+            else if (!rotator.isRotating)
+            {
+                aiRotationStarted = false;
+                isAIRotate = false;
+                isPlayerTurn1 = true; // Start player's turn again
+            }
+        }
         else
         {
             // AI logic
@@ -333,8 +351,9 @@ public class GameManager : MonoBehaviour
                 return;
             }
 
-            isPlayerTurn1 = true;
+            isPlayerTurn1 = false;
             isPlayerTurn2 = false; // End the player's turn
+            
             checkEdgeCase();
             padPresses = new int[padNumber]; // Reset padPresses
             distinctPadPresses = 0; // Reset the total pad presses
@@ -344,6 +363,7 @@ public class GameManager : MonoBehaviour
             {
                 padColours[i].color = unpressedColour;
             }
+            isAIRotate = true; // Start AI turn
         }
     }
 

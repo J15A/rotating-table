@@ -210,6 +210,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 246189239}
+  - component: {fileID: 246189240}
   m_Layer: 5
   m_Name: Game4
   m_TagString: Untagged
@@ -241,6 +242,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &246189240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 246189238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60e05a53eb024f20aed53bb51920dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PadRotator
+  isRotating: 0
+  speed: 700
 --- !u!1 &283363532
 GameObject:
   m_ObjectHideFlags: 0
@@ -983,6 +998,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 424984739}
+  - component: {fileID: 424984740}
   m_Layer: 5
   m_Name: Game3
   m_TagString: Untagged
@@ -1013,6 +1029,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &424984740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424984738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60e05a53eb024f20aed53bb51920dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PadRotator
+  isRotating: 0
+  speed: 700
 --- !u!1 &428185798
 GameObject:
   m_ObjectHideFlags: 0
@@ -5369,6 +5399,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1817634345}
+  - component: {fileID: 1817634346}
   m_Layer: 5
   m_Name: Game5
   m_TagString: Untagged
@@ -5401,6 +5432,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1817634346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1817634344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b60e05a53eb024f20aed53bb51920dca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PadRotator
+  isRotating: 0
+  speed: 700
 --- !u!1 &1834316231
 GameObject:
   m_ObjectHideFlags: 0

@@ -5,6 +5,9 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
+using System.Numerics;
+using Unity.Mathematics;
+using UnityEngine.Experimental.AI;
 
 public class GameManager : MonoBehaviour
 {
@@ -35,6 +38,8 @@ public class GameManager : MonoBehaviour
         public int[] pads; // Array to hold the state of the pads
         public int[] padsPresses; // Array to hold the current player pad presses
     }
+
+    public int[] lastPads;
 
     public GameObject[] games = new GameObject[3]; // Array to hold different game objects
 
@@ -114,7 +119,8 @@ public class GameManager : MonoBehaviour
 
     public int[] GetBestMovePads(gameState position)
     {
-        double maxEval = double.NegativeInfinity;
+        List<double> maxEvals = new List<double>();
+        List<int[]> childStates = new List<int[]>();
         int[] bestPads = null;
 
         for (int newPadStart = 0; newPadStart < padNumber; newPadStart++)
@@ -132,12 +138,23 @@ public class GameManager : MonoBehaviour
                 count++;
             }
             double eval = evaluatePosition(childState); // Evaluate the child state
-            if (eval > maxEval)
+            if (maxEvals.Count == 0 || eval > maxEvals[0])
             {
-                maxEval = eval;
-                bestPads = (int[])childState.pads.Clone();
+                maxEvals.Clear();
+                childStates.Clear();
+                maxEvals.Add(eval);
+                childStates.Add(childState.pads);
+            }
+            else if (eval == maxEvals[0])
+            {
+                maxEvals.Add(eval);
+                childStates.Add(childState.pads);
             }
         }
+
+        // Randomly select one of the best moves
+        int randomIndex = UnityEngine.Random.Range(0, childStates.Count);
+        bestPads = childStates[randomIndex];
         return bestPads;
     }
 
@@ -194,7 +211,6 @@ public class GameManager : MonoBehaviour
                 }
             }
             double score = Math.Max(redCount, blueCount); // Return the maximum count of pads of the same color
-            Debug.Log("Evaluating position: Red Count = " + redCount + ", Blue Count = " + blueCount + ", Score = " + score);
             minEval = Math.Min(minEval, padNumber - score); // Update the minimum evaluation score
         }
         return minEval; // Return the minimum evaluation score for the minimizing player
@@ -205,7 +221,6 @@ public class GameManager : MonoBehaviour
     {
         while (isPlayerTurn1! && isPlayerTurn2!)
         {
-            //disable button presses
             for (int i = 0; i < padButtons.Length; i++)
             {
                 padButtons[i].interactable = false; // Disable button presses during AI turn
@@ -240,17 +255,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // AI logic can be implemented here
-            Debug.Log("AI's turn to play");
+            // AI logic
             int[] bestPads = GetBestMovePads(new gameState { pads = pads, padsPresses = padPresses });
             if (bestPads != null)
             {
-                Debug.Log("Best pads for AI: " + string.Join(", ", bestPads));
-                // Update the pads with the best move
-                for (int i = 0; i < padNumber; i++)
-                {
-                    pads[i] = bestPads[i];
-                }
+                pads = bestPads;
+                lastPads = (int[])bestPads.Clone();
             }
             isPlayerTurn2 = true;
         }
@@ -264,10 +274,8 @@ public class GameManager : MonoBehaviour
             {
                 // Increment the pad press for the specific pad
                 padPresses[padIndex]++;
-                Debug.Log("Pad " + (padIndex + 1) + " pressed.");
                 if (distinctPadPresses == handNumber)
                 {
-                    Debug.Log("Player has pressed enough pads. Ending turn.");
                     isPlayerTurn1 = false; // End the player's turn
                 }
                 padColours[padIndex].color = pressedColour; // Change color to indicate it has been pressed
@@ -296,7 +304,6 @@ public class GameManager : MonoBehaviour
     {
         if (!isPlayerTurn2)
         {
-            Debug.Log("It's not the player's turn to end.");
             return; // Do not allow ending the turn if it's not the player's turn
         }
         if (distinctPadPresses >= handNumber)
@@ -313,25 +320,22 @@ public class GameManager : MonoBehaviour
             }
             if (allSameColour)
             {
-                Debug.Log("All pads are the same colour. Player wins!");
-                // Handle win condition here (e.g., show win message, reset game, etc.)
                 // Set all pad colours to the winning colour
                 Color winningColor = pads[0] == 0 ? Color.red : Color.blue;
                 for (int i = 0; i < padColours.Length; i++)
                 {
                     padColours[i].color = winningColor;
                 }
-                //show the win message
+                // Show the win message
                 endGameMessage.SetActive(true);
                 endGameHeader.text = "You Win!";
                 endGameBody.text = "You have found the strategy that guarantees a win. Well done!";
                 return;
             }
-            // If the player has pressed enough pads, they can end their turn
-            Debug.Log("Player ended their turn");
 
             isPlayerTurn1 = true;
             isPlayerTurn2 = false; // End the player's turn
+            checkEdgeCase();
             padPresses = new int[padNumber]; // Reset padPresses
             distinctPadPresses = 0; // Reset the total pad presses
 
@@ -341,10 +345,42 @@ public class GameManager : MonoBehaviour
                 padColours[i].color = unpressedColour;
             }
         }
-        else
+    }
+
+    private void checkEdgeCase(){
+        if (padNumber == 4 && handNumber == 2)
         {
-            Debug.Log("Not enough pad presses to end the turn. Minimum required: " + handNumber);
-            return; // Do not end the turn if the condition is not met
+            // Check if pad presses was an adjacent move
+            int press1 = -1; 
+            int press2 = -1;
+            for (int i = 0; i < padNumber; i++){
+                if (padPresses[i] > 0){
+                    if (press1 == -1) press1 = i;
+                    else press2 = i;
+                }
+            }
+            Debug.Log("Press1: " + press1 + ", Press2: " + press2);
+            if (Math.Abs(press1 - press2) == 1){
+                // Check if set up for the edge case was correct
+                if (lastPads[press1] != lastPads[press2]) return;
+                int bluefreq = 0;
+                for (int i = 0; i < padNumber; i++){
+                    if (lastPads[i] == 1) bluefreq++;
+                }
+                Debug.Log("Edge case detected");
+                // Edge case was reached
+                // If current pads is [1,0,1,0] or [0,1,0,1], change to adjacent
+                List<int> blueIndices = new List<int>();
+                for (int i = 0; i < padNumber; i++){
+                    if (pads[i] == 1) blueIndices.Add(i);
+                }
+                Debug.Log("Blue Indices: " + string.Join(",", blueIndices));
+                if (blueIndices.Count != 2) return;
+                if (Math.Abs(blueIndices[0] - blueIndices[1]) == 1) return;
+                // Otherwise we have the desired arrangement
+                pads = new int[] {1, 1, 0, 0};
+                return;
+            }
         }
     }
 

@@ -536,7 +536,7 @@ MonoBehaviour:
   padNumber: 3
   handNumber: 2
   unpressedColour: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
-  pressedColour: {r: 1, g: 0.7490196, b: 0, a: 1}
+  pressedColour: {r: 1, g: 0.62352943, b: 0.2509804, a: 1}
   pads: 
   endGameMessage: {fileID: 152861359}
   endGameHeader: {fileID: 1454194162}
@@ -1838,7 +1838,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5518868, g: 1, b: 0.74577874, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

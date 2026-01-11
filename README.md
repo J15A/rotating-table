@@ -26,5 +26,5 @@ Additionally, in the game you may customize the number of pads on the table and 
 
 ### Controls
 Keyboard shortcuts:
-* Number i on your keyboard will select/toggle the ith pad
+* Number $i$ on your keyboard will select/toggle the $i$ᵗʰ pad
 * Enter to end turn
